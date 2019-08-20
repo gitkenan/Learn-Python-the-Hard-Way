@@ -1,12 +1,13 @@
 from sys import exit
 from random import randint
+import time
 
 class Scene(object):
 
 	def enter(self):
 		print "You have entered the", self
 		self.scene_map = scene_map
-		
+			
 		
 class Engine(object):
 	# Engine is-a Object and has-a scene_map
@@ -20,9 +21,9 @@ class Engine(object):
 			print "/n--------"
 			next_scene_name = current_scene.enter()
 			current_scene = self.scene_map.next_scene(next_scene_name)
-
-
-
+			
+	
+	
 class Death(Scene):
 
 	quips = [
@@ -50,7 +51,7 @@ class CentralCorridor(Scene):
 		print "flowing around his hate filled body. He's blocking the door to the"
 		print "Armory and about to pull a weapon to blast you."
 		print "what would you do ?"
-		print """1.Shoot!\n2.dodge!\n3.tell a joke"""
+		print """1.Shoot!\n2.dodge!\n3.tell a joke\n4.engage in a duel"""
 		
 		action = raw_input("> ")
 		
@@ -80,7 +81,38 @@ class CentralCorridor(Scene):
 			print "While he's laughing you run up and shoot him square in the head"
 			print "putting him down, then jump through the Weapon Armory door."
 			return 'laser_weapon_armory'
+		
+		elif action == "engage in a duel":
+			# to define a small combat system
+			gothon_hp = 100
+			my_hp = 118
+		
+			while gothon_hp > 0 and my_hp > 0:
+				print "You strike the Gothon with all you've got."
+				my_hit = randint(0, 36)
+				gothon_hp -= my_hit
+				print "You hit a %d." % (my_hit)
+				time.sleep(1)
+				print "The Gothon's HP is %d" % (gothon_hp)
+				print "The Gothon hits you with all he's got."
+				gothon_hit = randint(0, 30)
+				my_hp -= gothon_hit
+				print "The Gothon hits a %d." % (gothon_hit)
+				print "My HP is now %d." % (my_hp)
+				time.sleep(1)
+				press_enter = raw_input("PRESS ENTER to HIT")
 			
+			if gothon_hp <= 0 and my_hp > 0:
+				print "You have killed the Gothon! Congratulations."
+				print "Your health regenerates to full."
+				return 'laser_weapon_armory'
+			elif my_hp <= 0 and gothon_hp >0:
+				print "The Gothon kills you with a final blow and you sit on the ground forever."
+				return 'death'
+			else:
+				print "You manage to kill the Gothon, but the Gothon just about managed"
+				print "to kill you in the same tick."
+				return 'death'
 		else:
 			print "DOES NOT COMPUTE!"
 			return 'central_corridor'
@@ -108,6 +140,11 @@ class LaserWeaponArmory(Scene):
 			print "The container clicks open and the seal breaks, letting gas out."
 			print "You grab the neutron bomb and run as fast as you can to the"
 			print "bridge where you must place it in the right spot."
+			return 'the_bridge'
+		# cheat code
+		elif guess == "one punch man":
+			print "You manage somehow to destroy the whole security mechanism"
+			print "with a single punch."
 			return 'the_bridge'
 		
 		else:
@@ -147,6 +184,13 @@ class TheBridge(Scene):
 			print "Now that the bomb is placed you run to the escape pod to"
 			print "get off this tin can."
 			return 'escape_pod'
+		# cheat code to escape the Pod room
+		elif action == "skip room":
+			print "You manage to somehow skip the Escape Pod scene."
+			print "You find yourself suddenly outside of the spaceship,"
+			print "and the Gothon spaceship explodes as you fade off "
+			print "out into the distance."
+			return 'finished'
 		else:
 			print "DOES NOT COMPUTE!"
 			return "the_bridge"
@@ -209,5 +253,6 @@ class Map(object):
 
 a_map = Map('central_corridor')
 a_game = Engine(a_map)
+# to play engine(map(central corridor))
 a_game.play()
 
